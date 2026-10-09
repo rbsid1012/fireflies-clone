@@ -747,6 +747,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/meetings/{meeting_id}/soundbites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Soundbites */
+        get: operations["list_soundbites_api_meetings__meeting_id__soundbites_get"];
+        put?: never;
+        /** Create Soundbite */
+        post: operations["create_soundbite_api_meetings__meeting_id__soundbites_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/soundbites/{soundbite_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Soundbite */
+        delete: operations["delete_soundbite_api_soundbites__soundbite_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Soundbite */
+        patch: operations["update_soundbite_api_soundbites__soundbite_id__patch"];
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -1472,6 +1508,57 @@ export interface components {
             text: string;
             /** Match */
             match: boolean;
+        };
+        /** SoundbiteCreate */
+        SoundbiteCreate: {
+            /** Start Segment Id */
+            start_segment_id: number;
+            /**
+             * End Segment Id
+             * @description Defaults to the start line: a one-line soundbite
+             */
+            end_segment_id?: number | null;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+        };
+        /** SoundbiteListOut */
+        SoundbiteListOut: {
+            /** Items */
+            items: components["schemas"]["SoundbiteOut"][];
+        };
+        /** SoundbiteOut */
+        SoundbiteOut: {
+            /** Id */
+            id: number;
+            /** Meeting Id */
+            meeting_id: number;
+            /** Start Segment Id */
+            start_segment_id: number;
+            /** End Segment Id */
+            end_segment_id: number;
+            /** Start Ms */
+            start_ms: number;
+            /** End Ms */
+            end_ms: number;
+            /** Speaker Name */
+            speaker_name: string | null;
+            /** Text */
+            text: string;
+            /** Note */
+            note: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** SoundbiteUpdate */
+        SoundbiteUpdate: {
+            /** Note */
+            note: string;
         };
         /** SuggestionsOut */
         SuggestionsOut: {
@@ -3293,7 +3380,7 @@ export interface operations {
     export_api_meetings__meeting_id__export_get: {
         parameters: {
             query?: {
-                format?: "md" | "txt";
+                format?: "md" | "txt" | "pdf";
             };
             header?: never;
             path: {
@@ -3311,6 +3398,7 @@ export interface operations {
                 content: {
                     "text/markdown": unknown;
                     "text/plain": unknown;
+                    "application/pdf": unknown;
                 };
             };
             /** @description Resource not found */
@@ -3823,6 +3911,172 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeetingDetail"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    list_soundbites_api_meetings__meeting_id__soundbites_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                meeting_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoundbiteListOut"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    create_soundbite_api_meetings__meeting_id__soundbites_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                meeting_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoundbiteCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoundbiteOut"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    delete_soundbite_api_soundbites__soundbite_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                soundbite_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    update_soundbite_api_soundbites__soundbite_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                soundbite_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoundbiteUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoundbiteOut"];
                 };
             };
             /** @description Resource not found */

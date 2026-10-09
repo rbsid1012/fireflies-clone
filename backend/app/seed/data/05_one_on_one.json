@@ -42,11 +42,11 @@
   "overview": "Alex and Marcus discussed Marcus's rough on-call week, caused by an ingestion worker memory failure after an oversized carrier file; Marcus will own the proper streaming fix. Alex proposed that Marcus lead the ingestion redesign over the next two months, with weekly design check-ins for support, and Marcus will write a short problem statement by next Wednesday. They covered the path to a senior promotion, which hinges on owning a cross-team technical project. Marcus raised slow code review turnaround and will propose a four-working-hour first-review norm to the team. He also plans a week off around Thanksgiving.",
   "keywords": ["on call", "ingestion redesign", "streaming", "senior promotion", "code review turnaround", "design check-ins", "time off"],
   "chapters": [
-    {"at": 0, "title": "Check in and on-call fallout", "summary": "Rough on-call week and the oversized file failure."},
-    {"at": 6, "title": "Ingestion redesign opportunity", "summary": "Marcus to lead the design with support from Alex."},
-    {"at": 15, "title": "Promotion path", "summary": "Scope and cross-team ownership as the gap."},
-    {"at": 20, "title": "Team and process", "summary": "Code review turnaround norm."},
-    {"at": 26, "title": "Time off", "summary": "Week off around Thanksgiving."}
+    {"at": 0, "title": "Check in and on-call fallout", "summary": "- On-call week caused fatigue\n  - last week\n- Page at 3 am Saturday handled\n  - by Marcus\n- Ingestion workers OOM from massive carrier file\n  - size limit added as stopgap\n- Ticket to be created for memory fix\n  - Marcus to own"},
+    {"at": 6, "title": "Ingestion redesign opportunity", "summary": "- Marcus seeks design role in ingestion redesign\n- Ingestion redesign biggest technical piece of 2026\n  - lead design, proposal, involve Dmitri and Sofia\n- Weekly design check-ins scheduled\n  - Alex to review first draft\n- Focus on redesign for next two months, max one on-call day/week\n- Problem statement due next Wednesday with volume growth numbers"},
+    {"at": 15, "title": "Promotion path", "summary": "- Senior promotion discussed start of year\n- Promotion gap: lack of cross-team technical ownership\n- Evaluation tied to redesign success and reliability work, calibrated in January\n  - no guaranteed timing\n- Alex to document promotion evidence"},
+    {"at": 20, "title": "Team and process", "summary": "- PR turnaround >1 day blocks shipping\n- Proposed norm: first review within four working hours\n  - informal trial succeeded\n- Marcus to raise review norm at next team meeting"},
+    {"at": 26, "title": "Time off", "summary": "- Week off planned end of November (Thanksgiving)\n- On-call coverage to be arranged\n- Calendar entry to be added today"}
   ],
   "action_items": [
     {"at": 14, "text": "Write a short problem statement for the ingestion redesign with volume growth numbers", "assignee": "Marcus", "due": "2026-10-14", "done": false},

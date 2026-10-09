@@ -1,13 +1,10 @@
 import json
 from datetime import date, datetime, timezone
-from types import SimpleNamespace
 
-import anthropic
-import httpx2 as httpx
 import pytest
 
 from app.models import SummarySource
-from app.services.llm_client import LLMClient, LLMError
+from app.services.llm_client import LLMError
 from app.services.summary_dates import parse_due_date
 from app.services.summary_heuristic import summarize_heuristic
 from app.services.summary_llm import summarize_llm
@@ -185,60 +182,6 @@ def test_generate_summary_falls_back_to_heuristic_on_any_llm_failure():
     assert generate_summary(SEGS, MONDAY, None).generated_by == SummarySource.heuristic
 
 
-# ---------------------------------------------------------------- LLMClient wrapper (no network)
-
-def _fake_sdk(response=None, error=None):
-    calls = []
-
-    def create(**kwargs):
-        calls.append(kwargs)
-        if error:
-            raise error
-        return response
-
-    return SimpleNamespace(messages=SimpleNamespace(create=create)), calls
-
-
-def _response(blocks, stop="end_turn"):
-    return SimpleNamespace(stop_reason=stop, content=blocks)
-
-
-def test_client_sends_system_and_user_and_joins_text_blocks_only():
-    sdk, calls = _fake_sdk(_response([SimpleNamespace(type="thinking"), SimpleNamespace(type="text", text="Hello "), SimpleNamespace(type="text", text="world")]))
-    out = LLMClient("key", "some-model", client=sdk).complete("be brief", "question?")
-    assert out == "Hello world"
-    assert calls[0]["model"] == "some-model" and calls[0]["system"] == "be brief"
-    assert calls[0]["messages"] == [{"role": "user", "content": "question?"}]
-    assert calls[0]["max_tokens"] >= 4096
-
-
-@pytest.mark.parametrize("stop, fragment", [("refusal", "declined"), ("max_tokens", "cut off")])
-def test_client_surfaces_refusals_and_truncation(stop, fragment):
-    sdk, _ = _fake_sdk(_response([SimpleNamespace(type="text", text="partial")], stop))
-    with pytest.raises(LLMError, match=fragment):
-        LLMClient("k", "m", client=sdk).complete("s", "u")
-
-
-def _status_error(cls, status):
-    request = httpx.Request("POST", "https://api.anthropic.com/v1/messages")
-    return cls("boom", response=httpx.Response(status, request=request), body=None)
-
-
-@pytest.mark.parametrize(
-    "error, fragment",
-    [
-        (_status_error(anthropic.RateLimitError, 429), "rate limited"),
-        (_status_error(anthropic.AuthenticationError, 401), "LLM_API_KEY"),
-        (_status_error(anthropic.InternalServerError, 500), "500"),
-        (anthropic.APIConnectionError(request=httpx.Request("POST", "https://x")), "Could not reach"),
-    ],
-)
-def test_client_translates_sdk_errors(error, fragment):
-    sdk, _ = _fake_sdk(error=error)
-    with pytest.raises(LLMError, match=fragment):
-        LLMClient("k", "m", client=sdk).complete("s", "u")
-
-
 def test_get_llm_client_is_none_without_a_key(monkeypatch):
     from app.config import settings
     from app.services.llm_client import get_llm_client
@@ -246,9 +189,10 @@ def test_get_llm_client_is_none_without_a_key(monkeypatch):
     monkeypatch.setattr(settings, "llm_api_key", None)
     assert get_llm_client() is None
     monkeypatch.setattr(settings, "llm_api_key", "sk-test")
-    monkeypatch.setattr(settings, "llm_model", "claude-opus-5-5")
+    monkeypatch.setattr(settings, "llm_base_url", "https://api.example.test/v1")
+    monkeypatch.setattr(settings, "llm_model", "some-model")
     client = get_llm_client()
-    assert client is not None and client.model == "claude-opus-5-5"
+    assert client is not None and client.model == "some-model"
 
 
 def test_the_language_preference_reaches_the_summary_prompt():

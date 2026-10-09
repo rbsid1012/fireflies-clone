@@ -98,7 +98,7 @@ def test_invalid_query_params_are_422_in_standard_shape(seeded):
 def test_detail_has_everything_the_page_needs(seeded):
     mid = ids(seeded.get("/api/meetings?q=kafka"))[0]
     d = seeded.get(f"/api/meetings/{mid}").json()
-    assert d["status"] == "ready" and d["source"] == "seed" and d["media_url"] is None
+    assert d["status"] == "ready" and d["source"] == "seed" and d["media_url"].startswith(f"/api/media/{d['id']}?sig=")  # seeded meetings come with a recording
     assert d["summary"]["generated_by"] == "seed" and d["summary"]["keywords"]
     assert len(d["chapters"]) == 6 and d["chapters"][0]["start_ms"] >= 0
     assert [p["speaker_label"] for p in d["participants"]] == ["Alex", "Marcus", "Ravi"]

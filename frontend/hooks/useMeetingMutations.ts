@@ -158,7 +158,7 @@ export function useMeetingMutations(meetingId: number) {
   });
 
   const exportAs = useMutation({
-    mutationFn: (format: "md" | "txt") => downloadFile(`/api/meetings/${meetingId}/export?format=${format}`, `meeting.${format}`),
+    mutationFn: (format: "md" | "txt" | "pdf") => downloadFile(`/api/meetings/${meetingId}/export?format=${format}`, `meeting.${format}`),
     onError: (e) => toast.error(message(e, "Couldn't export the meeting.")),
   });
 

@@ -118,7 +118,7 @@ export function ApiPage() {
       </Group>
 
       <Group title="MCP">
-        <Row icon={Server} title="MCP server" description="Let AI assistants such as Claude read your meetings through the Model Context Protocol." badge="Coming soon" disabled />
+        <Row icon={Server} title="MCP server" description="Let AI assistants read your meetings through the Model Context Protocol." badge="Coming soon" disabled />
       </Group>
 
       {creating && <CreateKey onClose={() => setCreating(false)} />}

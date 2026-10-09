@@ -148,8 +148,8 @@ export function AskPanel({ meetingId, className, scopeLabel, subtitle, variant }
         )}
 
         {messages.length === 0 ? (
-          <div className="flex min-h-[250px] flex-1 flex-col justify-end pb-6">
-            <Sparkles className="size-7 text-[#2dbf9b]" strokeWidth={1.5} />
+          <div className="flex min-h-[250px] flex-1 flex-col pb-6">
+            <Sparkles className="mt-auto size-7 text-[#2dbf9b]" strokeWidth={1.5} />
             <p className="mt-5 text-[20px] font-normal leading-[28px] text-foreground">Hi {firstName?.toUpperCase() ?? "there"}!</p>
             <p className="text-[20px] font-normal leading-[28px] text-foreground">{subtitleText}</p>
             <div className="mt-6 flex flex-col items-start gap-3">

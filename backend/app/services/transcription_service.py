@@ -4,6 +4,7 @@ Groq (whisper-large-v3-turbo) is the free option. Whisper does not tell speakers
 is attributed to "Speaker"; the timings are real. The result is a VTT document that goes through the
 same parser as an uploaded transcript.
 """
+import os
 import httpx
 
 from app.config import settings
@@ -11,6 +12,10 @@ from app.errors import AppError, ValidationFailed
 
 MAX_STT_BYTES = 25 * 1024 * 1024  # the free tiers' limit
 SPEAKER = "Speaker"
+
+
+# What the speech-to-text API can read. Other recordings can still be attached to a meeting that has a transcript.
+STT_EXTENSIONS = {".mp3", ".mp4", ".mpeg", ".mpga", ".m4a", ".wav", ".webm", ".ogg", ".oga", ".opus", ".flac"}
 
 
 def available() -> bool:
@@ -51,6 +56,12 @@ def transcribe(data: bytes, filename: str, content_type: str | None, client: htt
         raise ValidationFailed(
             "Transcribing a recording needs a speech-to-text provider. Add a transcript file with it, or set LLM_BASE_URL and LLM_API_KEY on the server.",
             "transcription_unavailable",
+        )
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in STT_EXTENSIONS:
+        raise ValidationFailed(
+            f"{ext or 'That'} recordings can't be transcribed automatically. Convert it to MP3, M4A, WAV, FLAC or MP4, or upload a transcript with it.",
+            "unsupported_for_transcription",
         )
     if len(data) > MAX_STT_BYTES:
         raise ValidationFailed(f"That recording is too large to transcribe automatically (the limit is {MAX_STT_BYTES // (1024 * 1024)} MB). Upload a transcript with it instead.", "recording_too_large")

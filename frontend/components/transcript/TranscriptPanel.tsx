@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useTranscriptSearch } from "@/hooks/useMeeting";
+import { useSoundbites } from "@/hooks/useSoundbites";
 import {
   filterCounts, matchesFilter, segmentSentiment, sentimentCounts, splitByMatches, talkTime,
   type FilterKey, type Sentiment, type TextPart,
@@ -131,6 +132,18 @@ export function TranscriptPanel({ meetingId, segments, keywords, taskSegmentIds,
 
   const pauseAutoScroll = () => setAutoScroll(false); // wheel/touch/keys only fire for the *user*, never for scrollTo
 
+  const { soundbites, create: createSoundbite } = useSoundbites(meetingId);
+  const savedSeqs = useMemo(() => {
+    const bySegmentId = new Map(segments.map((s) => [s.id, s.seq]));
+    const seqs = new Set<number>();
+    for (const sb of soundbites) {
+      const from = bySegmentId.get(sb.start_segment_id), to = bySegmentId.get(sb.end_segment_id);
+      if (from !== undefined && to !== undefined) for (let q = from; q <= to; q++) seqs.add(q);
+    }
+    return seqs;
+  }, [soundbites, segments]);
+  const saveSoundbite = useCallback((segment: TranscriptSegment) => createSoundbite.mutate({ start_segment_id: segment.id }), [createSoundbite]);
+
   const onSeek = useCallback((ms: number) => {
     player?.seek(ms);
     player?.play();
@@ -185,6 +198,7 @@ export function TranscriptPanel({ meetingId, segments, keywords, taskSegmentIds,
             visible.map((s) => (
               <TranscriptLine
                 key={s.id} segment={s} active={s.seq === activeSeq} onSeek={onSeek}
+                saved={savedSeqs.has(s.seq)} onSave={saveSoundbite}
                 parts={partsBySeg.get(s.id) ?? null}
                 currentMatch={s.seq === currentSeq ? currentMatchNumber : -1}
               />

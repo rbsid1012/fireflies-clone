@@ -60,7 +60,16 @@ def test_plain_text_export_has_no_markdown_syntax(seeded):
 def test_export_defaults_to_markdown_and_rejects_unknown_formats(seeded):
     mid = meeting_id(seeded, "standup")
     assert seeded.get(f"/api/meetings/{mid}/export").text.startswith("# ")
-    assert seeded.get(f"/api/meetings/{mid}/export?format=pdf").status_code == 422
+    assert seeded.get(f"/api/meetings/{mid}/export?format=docx").status_code == 422
+
+
+def test_pdf_export_is_a_real_pdf_even_with_non_latin_text(seeded, client):
+    mid = meeting_id(seeded, "standup")
+    res = seeded.get(f"/api/meetings/{mid}/export?format=pdf")
+    assert res.status_code == 200 and res.headers["content-type"] == "application/pdf"
+    assert res.content.startswith(b"%PDF") and res.headers["content-disposition"].endswith('.pdf"')
+    odd = client.post("/api/meetings", json={"title": "Привет – “quotes” …", "transcript_text": "[00:00:01] A: नमस्ते “hello” — ok"}).json()["id"]
+    assert client.get(f"/api/meetings/{odd}/export?format=pdf").content.startswith(b"%PDF")
 
 
 def test_export_of_a_long_meeting_uses_hour_timestamps(client):

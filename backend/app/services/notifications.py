@@ -10,9 +10,10 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.models import Meeting, MeetingStatus, User
-from app.services import email_service, email_templates, integration_service
+from app.services import email_recap, email_service, email_stats, email_templates, integration_service
 from app.services.meeting_service import get_meeting
 from app.services.settings_service import get_settings
+from app.services.transcript_service import get_transcript
 
 log = logging.getLogger(__name__)
 
@@ -55,18 +56,26 @@ def _notify(db: Session, meeting_id: int) -> None:
     open_items = [a.text for a in meeting.action_items if not a.is_completed]
     url = meeting_url(meeting.id)
 
+    _, segments = get_transcript(db, user, meeting_id)
+    details = email_recap.Details(
+        questions=email_stats.count_questions(segments), action_items_total=len(meeting.action_items),
+        dates=email_stats.count_dates(segments), keywords=meeting.summary.keywords if meeting.summary else [],
+        bullets=email_stats.overview_bullets(meeting),
+    )
     compliance = get_settings(user).compliance
     for name, address in recap_recipients(meeting, user, cfg.recap_recipients):
         rendered = email_templates.recap_email(
             recipient_name=name, owner_name=user.name, owner_email=user.email, title=meeting.title,
             started_at=meeting.started_at, overview=overview, action_items=open_items, include=cfg.recap_include,
-            url=url, settings_url=f"{settings.frontend_url.rstrip('/')}/settings/recording-privacy",
+            url=url, settings_url=f"{settings.frontend_url.rstrip('/')}/settings/recording-privacy", details=details,
             # Only people other than the owner are told the meeting was recorded
             notice=compliance.announcement if compliance.notify_participants and address.lower() != user.email.lower() else "",
         )
         email_service.send_email(
             db, user_id=user.id, meeting_id=meeting.id,
             msg=email_service.OutboundEmail(to=address, subject=rendered.subject, html=rendered.html, text=rendered.text),
+            # The shared demo account has invented addresses: its mail stays in the outbox, never goes out
+            transport=email_service.LogTransport() if user.is_demo else None,
         )
     integration_service.dispatch(db, user, title=meeting.title, url=url, overview=overview, action_items=open_items)
 

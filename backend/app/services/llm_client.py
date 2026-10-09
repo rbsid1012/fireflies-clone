@@ -1,12 +1,10 @@
 """Thin wrapper over a chat model. Absent when LLM_API_KEY is unset.
 
-By default it talks to Anthropic through its SDK. With LLM_BASE_URL set it talks to any
-OpenAI-compatible `/chat/completions` endpoint instead (Google Gemini, Groq, OpenRouter, ...),
-which is how free tiers are used.
+Talks to any OpenAI-compatible `/chat/completions` endpoint (Groq, Google Gemini, OpenRouter, ...),
+which is how free tiers are used. LLM_BASE_URL picks the provider.
 """
 import re
 
-import anthropic
 import httpx
 
 from app.config import settings
@@ -26,56 +24,24 @@ class LLMError(RuntimeError):
 
 
 class LLMClient:
-    def __init__(
-        self,
-        api_key: str,
-        model: str,
-        client: anthropic.Anthropic | None = None,
-        base_url: str | None = None,
-        http_client: httpx.Client | None = None,
-    ):
+    def __init__(self, api_key: str, model: str, base_url: str, http_client: httpx.Client | None = None):
         self.model = model
         self._api_key = api_key
-        self._base_url = base_url.rstrip("/") if base_url else None
-        if self._base_url:
-            self._http = http_client or httpx.Client(timeout=90.0)
-        else:
-            self._client = client or anthropic.Anthropic(api_key=api_key, timeout=90.0, max_retries=2)
+        self._base_url = base_url.rstrip("/")
+        self._http = http_client or httpx.Client(timeout=90.0)
 
     def complete(self, system: str, user: str, max_tokens: int = 16000) -> str:
         return self.chat(system, [{"role": "user", "content": user}], max_tokens)
 
     def chat(self, system: str, messages: list[dict[str, str]], max_tokens: int = 16000) -> str:
         """`messages` alternate user/assistant and must end with a user turn."""
-        if self._base_url:
-            return self._chat_openai_compatible(system, messages, max_tokens)
-        try:
-            response = self._client.messages.create(
-                model=self.model,
-                max_tokens=max_tokens,
-                system=system,
-                messages=messages,
-            )
-        except anthropic.RateLimitError as exc:
-            raise LLMError("The model is rate limited right now. Try again shortly.") from exc
-        except anthropic.AuthenticationError as exc:
-            raise LLMError("The configured LLM_API_KEY was rejected.") from exc
-        except anthropic.APIConnectionError as exc:
-            raise LLMError("Could not reach the model API.") from exc
-        except anthropic.APIStatusError as exc:
-            raise LLMError(f"The model API returned an error ({exc.status_code}).") from exc
-        if response.stop_reason == "refusal":
-            raise LLMError("The model declined to process this transcript.")
-        if response.stop_reason == "max_tokens":
-            raise LLMError("The model's reply was cut off.")
-        return _tidy("".join(b.text for b in response.content if b.type == "text")).strip()
-
+        return self._chat_openai_compatible(system, messages, max_tokens)
 
     def _chat_openai_compatible(self, system: str, messages: list[dict[str, str]], max_tokens: int) -> str:
         body = {
             "model": self.model,
             "messages": [{"role": "system", "content": system}, *messages],
-            "max_tokens": min(max_tokens, 8192),  # free tiers cap output well below Anthropic's limits
+            "max_tokens": min(max_tokens, 8192),  # free tiers cap output length
         }
         try:
             response = self._http.post(
@@ -104,6 +70,6 @@ class LLMClient:
 
 
 def get_llm_client() -> LLMClient | None:
-    if not settings.llm_api_key:
+    if not settings.llm_api_key or not settings.llm_base_url:
         return None
     return LLMClient(settings.llm_api_key, settings.llm_model, base_url=settings.llm_base_url)

@@ -10,7 +10,7 @@ from app.services import retention_service
 from app.errors import register_error_handlers
 from app.routers import (
     account, action_items, api_keys, ask, auth, export, integrations, media, meetings, people, search, settings as settings_router,
-    speakers, summary, tags, transcript, insights,
+    soundbites, speakers, summary, tags, transcript, insights,
 )
 from app.schemas.health import HealthOut
 
@@ -42,7 +42,7 @@ def create_app() -> FastAPI:
     register_error_handlers(app)
     for module in (
         auth, account, settings_router, api_keys, integrations, media, meetings, transcript, summary, export, ask,
-        action_items, search, people, tags, insights, speakers,
+        action_items, search, people, tags, insights, speakers, soundbites,
     ):
         app.include_router(module.router)
 

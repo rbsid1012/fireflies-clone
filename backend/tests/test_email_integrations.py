@@ -304,3 +304,36 @@ def test_the_compliance_notice_can_be_switched_off(anon_client):
     second = add_meeting(anon_client, headers, "Two", transcript_text=transcript)
     mail = next(e for e in emails(anon_client, headers) if e["meeting_id"] == second["id"] and e["to_email"] == "alice@example.com")
     assert "recorded and transcribed" not in detail(anon_client, headers, mail["id"])["text"]
+
+
+def test_real_email_is_sent_for_normal_accounts_but_never_for_the_demo_account(anon_client, monkeypatch):
+    sent = []
+    monkeypatch.setattr(settings, "smtp_host", "smtp.example.test")
+    monkeypatch.setattr(email_service.SmtpTransport, "send", lambda self, msg: sent.append((msg.to, msg.subject)))
+    recaps = lambda: [x for x in sent if x[1].startswith("Your meeting recap")]
+
+    ada = signup(anon_client)
+    add_meeting(anon_client, ada, "Real account")
+    assert recaps() == [("ada@example.com", "Your meeting recap - Real account")]
+
+    token = anon_client.post("/api/auth/demo").json()["token"]
+    demo = {"Authorization": f"Bearer {token}"}
+    add_meeting(anon_client, demo, "Demo upload")
+    assert len(recaps()) == 1  # nothing went out for the demo account
+    recap = [e for e in emails(anon_client, demo) if e["subject"] == "Your meeting recap - Demo upload"]
+    assert len(recap) == 1 and recap[0]["transport"] == "log"  # but it is still visible in the outbox
+
+
+def test_the_recap_shows_counts_keywords_and_overview_bullets(anon_client):
+    headers = signup(anon_client)
+    text = "\n".join([
+        "[00:00:01] Maya: Are we shipping on Friday?",
+        "[00:00:08] Leo: Yes, the build goes out Friday at 5 pm.",
+        "[00:00:15] Maya: Can you email the testers by tomorrow? Also, who owns the checklist?",
+    ])
+    meeting = anon_client.post("/api/meetings", headers=headers, json={"title": "Ship check", "transcript_text": text}).json()
+    recap = next(e for e in emails(anon_client, headers) if e["meeting_id"] == meeting["id"] and e["subject"].startswith("Your meeting recap"))
+    html, plain = detail(anon_client, headers, recap["id"])["html"], detail(anon_client, headers, recap["id"])["text"]
+    assert "In this meeting" in html and "Questions were asked" in html and "Dates &amp; times discussed" in html
+    assert "DISCUSSED IN THIS MEETING" in html and "Meeting Overview" in html and "View complete meeting notes" in html
+    assert "IN THIS MEETING" in plain and "2 questions asked" in plain

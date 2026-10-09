@@ -58,6 +58,7 @@ class SeedMeeting(BaseModel):
     chapters: list[SeedChapter]
     action_items: list[SeedActionItem]
     soundbites: list[SeedSoundbite] = []
+    source_file: str | None = None  # the data file's name without extension; also names its recording
 
     @model_validator(mode="after")
     def _cross_references(self):
@@ -88,7 +89,7 @@ def load_seed_meetings(data_dir: Path = DATA_DIR) -> list[SeedMeeting]:
     meetings = []
     for path in sorted(data_dir.glob("*.json")):
         try:
-            meetings.append(SeedMeeting.model_validate(json.loads(path.read_text())))
+            meetings.append(SeedMeeting.model_validate({**json.loads(path.read_text()), "source_file": path.stem}))
         except Exception as exc:
             raise ValueError(f"Invalid seed file {path.name}: {exc}") from exc
     return meetings

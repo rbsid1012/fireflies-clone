@@ -1,16 +1,17 @@
-"""Render a meeting as Markdown or plain text."""
+"""Render a meeting as Markdown, plain text or PDF."""
 from typing import Literal
 
 from sqlalchemy.orm import Session
 
 from app.models import Meeting, User
+from app.services.export_pdf import render_pdf
 from app.services.formatting import format_duration, format_timestamp, slugify
 from app.services.notes_format import plain
 from app.services.meeting_service import get_meeting
 from app.services.transcript_service import get_transcript
 
-ExportFormat = Literal["md", "txt"]
-MEDIA_TYPES = {"md": "text/markdown; charset=utf-8", "txt": "text/plain; charset=utf-8"}
+ExportFormat = Literal["md", "txt", "pdf"]
+MEDIA_TYPES = {"md": "text/markdown; charset=utf-8", "txt": "text/plain; charset=utf-8", "pdf": "application/pdf"}
 
 
 def _action_line(item, md: bool) -> str:
@@ -20,7 +21,7 @@ def _action_line(item, md: bool) -> str:
     return f"{'- ' if md else ''}{box} {item.text}{who}{due}"
 
 
-def render_meeting(meeting: Meeting, segments: list, fmt: ExportFormat) -> str:
+def render_meeting(meeting: Meeting, segments: list, fmt: Literal["md", "txt"]) -> str:
     md = fmt == "md"
     h1 = (lambda t: f"# {t}") if md else (lambda t: f"{t}\n{'=' * len(t)}")
     h2 = (lambda t: f"## {t}") if md else (lambda t: f"{t}\n{'-' * len(t)}")
@@ -61,8 +62,9 @@ def render_meeting(meeting: Meeting, segments: list, fmt: ExportFormat) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def export_meeting(db: Session, owner: User, meeting_id: int, fmt: ExportFormat) -> tuple[str, str, str]:
+def export_meeting(db: Session, owner: User, meeting_id: int, fmt: ExportFormat) -> tuple[str, str | bytes, str]:
     """Return (filename, body, media_type)."""
     meeting = get_meeting(db, owner, meeting_id)
     _, segments = get_transcript(db, owner, meeting_id)
-    return f"{slugify(meeting.title)}.{fmt}", render_meeting(meeting, segments, fmt), MEDIA_TYPES[fmt]
+    body = render_pdf(meeting, segments) if fmt == "pdf" else render_meeting(meeting, segments, fmt)
+    return f"{slugify(meeting.title)}.{fmt}", body, MEDIA_TYPES[fmt]

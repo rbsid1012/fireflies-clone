@@ -42,9 +42,9 @@ class Settings(BaseSettings):
 
     # When unset, summaries fall back to the heuristic generator
     llm_api_key: str | None = None
-    llm_model: str = "claude-opus-5-5"
-    # Set to use an OpenAI-compatible provider (Gemini, Groq, OpenRouter, ...) instead of Anthropic
-    llm_base_url: str | None = None
+    llm_model: str = "openai/gpt-oss-120b"
+    # Any OpenAI-compatible provider (Groq, Gemini, OpenRouter, ...)
+    llm_base_url: str = "https://api.groq.com/openai/v1"
     # Speech-to-text model for recordings uploaded without a transcript (same provider/key as above)
     stt_model: str = "whisper-large-v3-turbo"
 

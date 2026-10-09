@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from html import escape
 
+from app.services import email_recap
+
 BRAND = "#623ae6"
 
 
@@ -49,46 +51,13 @@ def _when(started_at: datetime) -> str:
 def recap_email(
     *, recipient_name: str, owner_name: str, owner_email: str, title: str, started_at: datetime,
     overview: str, action_items: list[str], include: str, url: str, settings_url: str, notice: str = "",
+    details: email_recap.Details | None = None,
 ) -> Rendered:
-    """'Your meeting recap': the email sent whenever a meeting finishes processing."""
-    show_actions = include in ("overview_actions", "full") and action_items
-    parts = [
-        f'<p style="margin:8px 0 0 0;text-align:center;font-size:15px;color:#6b6b73;">Hi {escape(recipient_name)},</p>',
-        f'<h1 style="margin:6px 0 4px 0;text-align:center;font-size:24px;line-height:30px;">'
-        f'<span style="color:{BRAND};">{escape(owner_name)}</span> added a meeting</h1>',
-        '<p style="margin:0 0 20px 0;text-align:center;font-size:14px;color:#6b6b73;">Your notes and action items are ready.</p>',
-        f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e4e4e8;border-radius:12px;">'
-        f'<tr><td style="padding:16px 18px;"><div style="font-size:16px;font-weight:600;">{escape(title)}</div>'
-        f'<div style="font-size:13px;color:#6b6b73;margin-top:2px;">{escape(_when(started_at))}</div></td></tr></table>',
-    ]
-    if overview:
-        parts.append(
-            '<h2 style="margin:24px 0 6px 0;font-size:15px;">Overview</h2>'
-            f'<p style="margin:0;font-size:14px;line-height:22px;color:#33333a;">{escape(overview)}</p>'
-        )
-    if show_actions:
-        items = "".join(f'<li style="margin:0 0 6px 0;">{escape(a)}</li>' for a in action_items[:10])
-        parts.append(
-            '<h2 style="margin:24px 0 6px 0;font-size:15px;">Action items</h2>'
-            f'<ul style="margin:0;padding-left:20px;font-size:14px;line-height:21px;color:#33333a;">{items}</ul>'
-        )
-    if notice:
-        parts.append(f'<p style="margin:20px 0 0 0;text-align:center;font-size:13px;color:#6b6b73;">{escape(notice)}</p>')
-    parts.append(
-        f'<div style="text-align:center;margin-top:28px;">{_button("View meeting recap", url)}{_button("Share this recap", url, False)}</div>'
-        f'<p style="margin:22px auto 0 auto;text-align:center;"><span style="display:inline-block;background:#f1f1f3;border-radius:999px;'
-        f'padding:7px 14px;font-size:12px;color:#55555d;">Meeting notes taken on behalf of {escape(owner_email)}</span></p>'
-    )
-    footer = f'You get this because of your email notification settings. <a href="{escape(settings_url, quote=True)}" style="color:#8a8a93;">Change what you receive</a>.'
-    text = [f"Hi {recipient_name},", "", f"{owner_name} added a meeting: {title}", _when(started_at), ""]
-    if overview:
-        text += ["OVERVIEW", overview, ""]
-    if show_actions:
-        text += ["ACTION ITEMS", *[f"- {a}" for a in action_items[:10]], ""]
-    if notice:
-        text += [notice, ""]
-    text += [f"View meeting recap: {url}", "", f"Meeting notes taken on behalf of {owner_email}"]
-    return Rendered(f"Your meeting recap - {title}", _shell(f"Recap: {title}", "".join(parts), footer), "\n".join(text))
+    """'Your meeting recap': the email sent whenever a meeting finishes processing (layout in email_recap.py)."""
+    show_actions = bool(include in ("overview_actions", "full") and action_items)
+    args = dict(owner_name=owner_name, owner_email=owner_email, title=title, started_at=started_at, overview=overview,
+                action_items=action_items, show_actions=show_actions, url=url, notice=notice, details=details)
+    return Rendered(f"Your meeting recap - {title}", email_recap.recap_html(settings_url=settings_url, **args), email_recap.recap_text(**args))
 
 
 def welcome_email(*, name: str, url: str) -> Rendered:

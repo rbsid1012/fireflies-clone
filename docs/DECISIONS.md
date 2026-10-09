@@ -69,7 +69,7 @@
 
 **Heuristic summarizer.** Chapters are fixed time windows (window = duration/6 clamped to 1-10 min, sparse windows merged), titled by their top TF-IDF terms; keywords are TF-IDF over those windows with speaker names excluded; the overview is the first substantive sentence of each chapter; action items come from regexes (`I'll`, `we need to`, `can you`, `by Friday`, `action item`, `make sure`, `follow up`), with the speaker as assignee for first-person commitments, the *next* speaker for "can you ...?", deadlines resolved relative to the meeting date, and questions/pleasantries filtered out. Honest limitation: chapter titles are keyword lists ("Staging, Million, Scans"), not prose — that is what the LLM path is for.
 
-**LLM is pluggable and never required.** `LLM_API_KEY` unset -> `get_llm_client()` returns `None` and everything uses the heuristic. When set, the official `anthropic` SDK is used (default model `claude-opus-5-5`, overridable with `LLM_MODEL`). Any LLM failure (rate limit, auth, refusal, truncation, malformed JSON, out-of-range indices) raises `LLMError` and summaries silently fall back to the heuristic; `/ask` instead returns 502 with the reason. Transcripts over 400k characters are not truncated; they fall back/422. **Not exercised against the real API** (no key here): the wrapper is tested with a fake SDK object and the real SDK's exception classes, and the prompt/JSON contract is tested with a fake client.
+**LLM is pluggable and never required.** `LLM_API_KEY` unset -> `get_llm_client()` returns `None` and everything uses the heuristic. When set, any OpenAI-compatible provider is used (Groq by default; `LLM_BASE_URL` and `LLM_MODEL` change it). Any LLM failure (rate limit, auth, refusal, truncation, malformed JSON, out-of-range indices) raises `LLMError` and summaries silently fall back to the heuristic; `/ask` instead returns 502 with the reason. Transcripts over 400k characters are not truncated; they fall back/422. **Not exercised against the real API** (no key here): the wrapper is tested with a fake SDK object and the real SDK's exception classes, and the prompt/JSON contract is tested with a fake client.
 
 **Export** is Markdown or plain text built from the same loaders as the detail page, served with `Content-Disposition` and a slugified filename.
 
@@ -202,7 +202,7 @@ README (setup, architecture, schema, API, limits) and `docs/DEPLOY.md`. The back
 
 ## Free LLM providers
 
-`LLM_BASE_URL` switches the client from the Anthropic SDK to any OpenAI-compatible `/chat/completions` endpoint, using `httpx` (already a dependency). Verified live against Groq with `openai/gpt-oss-120b` (the first model I tried, `llama-3.3-70b-versatile`, had been retired: the models endpoint is the way to check). Two real problems showed up only against a live model: it writes citations with a narrow no-break space (U+202F) and non-breaking hyphens in ranges, so `[#7 02:39]` and `[00:33-01:00]` did not parse and sources came back empty. Model output is now normalised in one place (`llm_client._tidy`) and both citation parsers accept ranges. Tests ignore a developer's `backend/.env`.
+The client talks to an OpenAI-compatible `/chat/completions` endpoint with `httpx`, so there is no vendor SDK to install (an earlier version also supported a vendor SDK; it was removed to keep one code path). Verified live against Groq with `openai/gpt-oss-120b` (the first model I tried, `llama-3.3-70b-versatile`, had been retired: the models endpoint is the way to check). Two real problems showed up only against a live model: it writes citations with a narrow no-break space (U+202F) and non-breaking hyphens in ranges, so `[#7 02:39]` and `[00:33-01:00]` did not parse and sources came back empty. Model output is now normalised in one place (`llm_client._tidy`) and both citation parsers accept ranges. Tests ignore a developer's `backend/.env`.
 
 ## Measured parity pass (sizes, spacing, layout)
 
@@ -243,3 +243,10 @@ Uploading the sample recording to Fireflies showed the target layout: filter car
 - **No-model fallback** picks the sentences with digits/dates/weekdays first and links each to the line it was said on.
 - Search, Ask Fred and exports use `plain()` so the markers never show up in text.
 - Points without a stored moment fall back to the old word-overlap lookup (`momentFor`), so every bullet still links to a real line.
+
+## Gap-closing pass: PDF export, soundbites, seeded audio
+
+- **PDF export** (`export_pdf.py`, fpdf2, pure Python so deploys need no system libraries). Uses the built-in Helvetica, so text is limited to Latin-1: common punctuation is mapped and anything else becomes `?`. Markdown and TXT export are unaffected.
+- **Soundbites** reuse the existing `soundbites` table (start/end segment ids + note); no migration. Text and times are derived from the transcript at read time, so they never go stale. A span is capped at 30 lines. Known limit: "Identify speakers" replaces the segments, which can drop soundbites that pointed at the old lines.
+- **Seeded audio.** `python -m app.seed.make_audio` (macOS `say` + `afconvert`) speaks every seed transcript, one voice per participant, with each line fitted into the time slot the seed already assigns it, so audio, transcript and seek bar agree. The 6 MB output is committed under `app/seed/media/` so deploys don't need macOS; seeding copies each file into the media directory like an upload. Only needs re-running after editing a seed transcript.
+- **Seed notes** now use the nested-points format (see the notes pass above), drafted once with the model and reviewed; points carry no stored timestamp, so the app links them by word overlap.

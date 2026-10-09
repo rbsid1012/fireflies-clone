@@ -4,6 +4,8 @@
     python -m app.seed.seed --reset    # wipe everything and reseed
 """
 import argparse
+import shutil
+from pathlib import Path
 
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
@@ -13,6 +15,7 @@ from app.models import (
     MeetingTag, Person, Soundbite, Summary, SummarySource, Tag, TranscriptSegment, User,
 )
 from app.seed.loader import SeedMeeting, load_seed_meetings
+from app.services import media_service
 from app.services.timing import estimate_duration_ms, estimate_timings
 
 DEFAULT_USER = {"name": "Alex Morgan", "email": "alex.morgan@lumenly.io", "is_demo": True}
@@ -47,6 +50,21 @@ class _Registry:
             self.db.flush()
             self.tags[name] = t
         return self.tags[name]
+
+
+MEDIA_DIR = Path(__file__).parent / "media"
+
+
+def _attach_recording(owner: User, meeting: Meeting, data: SeedMeeting) -> None:
+    """Give the meeting its spoken recording (see make_audio.py), copied where uploaded media lives."""
+    source = MEDIA_DIR / f"{data.source_file}.m4a"
+    if not data.source_file or not source.is_file():
+        return
+    rel = f"{owner.id}/{meeting.id}-seed.m4a"
+    dest = media_service.media_root() / rel
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source, dest)
+    meeting.media_path, meeting.media_type = rel, "audio/mp4"
 
 
 def _insert_meeting(db: Session, reg: _Registry, owner: User, data: SeedMeeting) -> Meeting:
@@ -102,6 +120,7 @@ def _insert_meeting(db: Session, reg: _Registry, owner: User, data: SeedMeeting)
         ))
     for name in data.tags:
         db.add(MeetingTag(meeting_id=meeting.id, tag_id=reg.tag(name).id))
+    _attach_recording(owner, meeting, data)
     db.flush()
     return meeting
 

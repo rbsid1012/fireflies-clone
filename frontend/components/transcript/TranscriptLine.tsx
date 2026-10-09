@@ -1,6 +1,7 @@
 "use client";
 
 import { memo } from "react";
+import { Bookmark } from "lucide-react";
 import { formatTimestamp } from "@/lib/time";
 import type { TextPart } from "@/lib/transcript-tools";
 import type { TranscriptSegment } from "@/lib/types";
@@ -15,10 +16,13 @@ type Props = {
   /** Number of the search match currently selected, to give it the strong highlight. */
   currentMatch: number;
   onSeek: (ms: number) => void;
+  /** Whether this line is already inside a saved soundbite. */
+  saved?: boolean;
+  onSave?: (segment: TranscriptSegment) => void;
 };
 
 /** One utterance. Clicking anywhere on it (or pressing Enter) seeks the player to when it was said. */
-export const TranscriptLine = memo(function TranscriptLine({ segment, active, parts, currentMatch, onSeek }: Props) {
+export const TranscriptLine = memo(function TranscriptLine({ segment, active, parts, currentMatch, onSeek, saved = false, onSave }: Props) {
   return (
     <div
       role="button" tabIndex={0} data-seq={segment.seq} aria-current={active ? "true" : undefined}
@@ -38,6 +42,14 @@ export const TranscriptLine = memo(function TranscriptLine({ segment, active, pa
         <SpeakerAvatar name={segment.speaker_name ?? "Unknown"} colorIndex={segment.color_index} className="size-5 text-[9px]" />
         <span className="text-[13px] font-medium text-foreground/90">{segment.speaker_name ?? "Unknown"}</span>
         <span className="text-[12px] tabular-nums text-muted-foreground">{formatTimestamp(segment.start_ms)}</span>
+        {onSave && (
+          <button
+            type="button" aria-label={saved ? "Saved as a soundbite" : "Save as a soundbite"} title={saved ? "Saved as a soundbite" : "Save as a soundbite"}
+            onClick={(e) => { e.stopPropagation(); if (!saved) onSave(segment); }}
+            onKeyDown={(e) => e.stopPropagation()}
+            className={cn("ml-auto grid size-6 place-items-center rounded-md outline-none transition-opacity focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring/50", saved ? "text-iris" : "text-muted-foreground opacity-0 hover:text-foreground group-hover:opacity-100")}
+          ><Bookmark className="size-3.5" strokeWidth={1.5} fill={saved ? "currentColor" : "none"} /></button>
+        )}
       </div>
       <p className="pl-7 text-[14px] leading-6 text-foreground/85">
         {parts

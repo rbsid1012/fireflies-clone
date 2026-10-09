@@ -1,7 +1,10 @@
 /** Client-side checks that give instant feedback; the server validates everything again. */
 
 export const TRANSCRIPT_EXTENSIONS = [".txt", ".vtt", ".srt", ".json"] as const;
-export const MEDIA_EXTENSIONS = [".mp3", ".m4a", ".wav", ".mp4", ".webm", ".ogg", ".aac", ".mov"] as const;
+export const MEDIA_EXTENSIONS = [
+  ".mp3", ".m4a", ".wav", ".aac", ".ogg", ".oga", ".opus", ".flac", ".wma", ".mpga", ".mpeg",
+  ".mp4", ".m4v", ".mov", ".webm", ".mkv", ".avi", ".3gp",
+] as const;
 export const MAX_TRANSCRIPT_BYTES = 5_000_000;
 export const MAX_MEDIA_BYTES = 200 * 1024 * 1024;
 

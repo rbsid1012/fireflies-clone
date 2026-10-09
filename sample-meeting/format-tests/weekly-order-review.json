@@ -1,0 +1,58 @@
+{
+  "segments": [
+    {
+      "speaker": "Maya",
+      "start": 0.8,
+      "end": 4.99,
+      "text": "Thanks for joining. This is the weekly order review for October the ninth."
+    },
+    {
+      "speaker": "Leo",
+      "start": 5.59,
+      "end": 11.76,
+      "text": "Orders are up twelve percent to four thousand two hundred this week, but returns also rose to six percent."
+    },
+    {
+      "speaker": "Maya",
+      "start": 12.36,
+      "end": 16.12,
+      "text": "What is driving the returns? Is it sizing on the new jacket line?"
+    },
+    {
+      "speaker": "Leo",
+      "start": 16.72,
+      "end": 22.51,
+      "text": "Yes. Sizing accounts for roughly two thirds of them, mostly the medium and large jackets."
+    },
+    {
+      "speaker": "Maya",
+      "start": 23.11,
+      "end": 29.37,
+      "text": "Okay. Leo, please update the size chart on the product pages by Tuesday, October thirteenth."
+    },
+    {
+      "speaker": "Leo",
+      "start": 29.97,
+      "end": 35.95,
+      "text": "Will do. I will also email the three hundred customers who returned a jacket with a ten percent voucher."
+    },
+    {
+      "speaker": "Maya",
+      "start": 36.55,
+      "end": 41.46,
+      "text": "Good. I will approve the voucher budget of three thousand rupees today. Anything else?"
+    },
+    {
+      "speaker": "Leo",
+      "start": 42.06,
+      "end": 47.76,
+      "text": "One risk. The courier contract renews on October thirty first and their price goes up eight percent."
+    },
+    {
+      "speaker": "Maya",
+      "start": 48.36,
+      "end": 53.62,
+      "text": "Let us get two alternative quotes before then. I will take that one. Thanks everyone."
+    }
+  ]
+}

@@ -2,7 +2,7 @@ from app.services.llm_client import LLMClient, LLMError
 
 
 class FakeLLM(LLMClient):
-    """Stands in for the Anthropic-backed client: returns a canned reply, or raises.
+    """Stands in for the model client: returns a canned reply, or raises.
 
     `calls` holds (system, last user message); `conversations` the full message lists.
     """

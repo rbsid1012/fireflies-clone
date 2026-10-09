@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api/meetings/{meeting_id}/export", tags=["export"])
 
 
 @router.get(
-    "", responses={**ERROR_RESPONSES, 200: {"content": {"text/markdown": {}, "text/plain": {}}}},
+    "", responses={**ERROR_RESPONSES, 200: {"content": {"text/markdown": {}, "text/plain": {}, "application/pdf": {}}}},
     response_class=Response,
 )
 def export(meeting_id: int, db: DbSession, user: CurrentUser, format: Annotated[ExportFormat, Query()] = "md"):

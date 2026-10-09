@@ -30,7 +30,7 @@ def test_media_can_be_attached_streamed_and_replaced(anon_client, tmp_path):
     replaced = upload(anon_client, headers, meeting["id"], b"ID3" + b"x" * 500, "other.mp3")
     assert replaced.status_code == 201 and anon_client.get(replaced.json()["media_url"]).content.startswith(b"ID3x")
     assert replaced.json()["media_url"] != url  # new version marker busts the browser cache
-    assert len([p for p in (tmp_path / "media").rglob("*") if p.is_file()]) == 1  # the old file was deleted
+    assert len([p for p in (tmp_path / "media").rglob("*.mp3")]) == 1  # the old file was deleted
 
 
 def test_media_can_be_supplied_when_the_meeting_is_created(anon_client):
@@ -83,7 +83,7 @@ def test_filenames_cannot_escape_the_media_directory(anon_client, tmp_path):
 
 def test_files_are_removed_with_the_media_the_meeting_or_the_account(anon_client, tmp_path):
     headers = signup(anon_client)
-    files = lambda: [p for p in (tmp_path / "media").rglob("*") if p.is_file()]
+    files = lambda: [p for p in (tmp_path / "media").rglob("*.mp3")]
     m1, m2 = add_meeting(anon_client, headers, "one"), add_meeting(anon_client, headers, "two")
     upload(anon_client, headers, m1["id"]); upload(anon_client, headers, m2["id"])
     assert len(files()) == 2
@@ -93,3 +93,19 @@ def test_files_are_removed_with_the_media_the_meeting_or_the_account(anon_client
     assert len(files()) == 1
     anon_client.request("DELETE", "/api/me", headers=headers, json={"password": "correct-horse-battery"})
     assert files() == []
+
+
+def test_untyped_uploads_get_a_content_type_from_their_extension(anon_client):
+    headers = signup(anon_client)
+    meeting = add_meeting(anon_client, headers)
+    res = upload(anon_client, headers, meeting["id"], name="call.flac", ctype="application/octet-stream")
+    assert res.status_code == 201
+    assert anon_client.get(res.json()["media_url"]).headers["content-type"] == "audio/flac"
+
+
+def test_every_common_recording_format_can_be_attached(anon_client):
+    headers = signup(anon_client)
+    for ext in ("mp3", "m4a", "aac", "ogg", "opus", "flac", "wav", "wma", "mp4", "mov", "webm", "mkv", "avi", "3gp"):
+        meeting = add_meeting(anon_client, headers, ext)
+        assert upload(anon_client, headers, meeting["id"], name=f"call.{ext}", ctype="application/octet-stream").status_code == 201, ext
+    assert upload(anon_client, headers, meeting["id"], name="call.exe", ctype="application/octet-stream").status_code == 422

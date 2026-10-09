@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { PlayerBar } from "@/components/player/PlayerBar";
 import { PlayerProvider, usePlayer } from "@/components/player/PlayerProvider";
 import { SkillsTab } from "@/components/summary/SkillsTab";
+import { SoundbitesPanel } from "@/components/soundbites/SoundbitesPanel";
 import { NotesView } from "@/components/summary/NotesView";
 import { TranscriptPanel } from "@/components/transcript/TranscriptPanel";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -126,8 +127,7 @@ function Body({ meeting, transcript }: { meeting: Meeting; transcript: Transcrip
 
         <div className={cn("min-h-0 w-full border-r lg:block lg:w-[338px] lg:shrink-0", view === "transcript" ? "block" : "hidden")}>
           {rail === "soundbites" ? (
-            <section aria-label="Soundbites" className="flex h-full flex-col"><h2 className="flex h-14 shrink-0 items-center border-b px-6 text-[16px]">Soundbites</h2>
-              <EmptyState icon={Bookmark} title="Soundbites aren't part of this version" description="Saving short clips from a recording isn't built yet. Timestamps in the transcript still jump to any moment." /></section>
+            <SoundbitesPanel meetingId={meeting.id} onJump={jump} />
           ) : transcriptPanel(rail)}
         </div>
 

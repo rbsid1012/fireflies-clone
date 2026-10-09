@@ -20,6 +20,7 @@ export type Chapter = Schemas["ChapterOut"];
 export type ActionItem = Schemas["ActionItemOut"];
 export type Transcript = Schemas["TranscriptOut"];
 export type TranscriptSegment = Schemas["TranscriptSegmentOut"];
+export type Soundbite = Schemas["SoundbiteOut"];
 export type SearchResults = Schemas["SearchOut"];
 
 export type Page<T> = { items: T[]; total: number; page: number; limit: number };

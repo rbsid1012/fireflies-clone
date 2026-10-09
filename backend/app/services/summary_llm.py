@@ -1,4 +1,4 @@
-"""Summarize with Claude. Any failure raises LLMError so the caller can fall back to the heuristic."""
+"""Summarize with the configured model. Any failure raises LLMError so the caller can fall back to the heuristic."""
 import json
 import re
 from datetime import date, datetime

@@ -9,8 +9,18 @@ from fastapi import UploadFile
 from app.config import settings
 from app.errors import AppError, ValidationFailed
 
-ALLOWED_EXTENSIONS = {".mp3", ".m4a", ".wav", ".mp4", ".webm", ".ogg", ".aac", ".mov"}
+ALLOWED_EXTENSIONS = {
+    ".mp3", ".m4a", ".wav", ".aac", ".ogg", ".oga", ".opus", ".flac", ".wma", ".mpga", ".mpeg",
+    ".mp4", ".m4v", ".mov", ".webm", ".mkv", ".avi", ".3gp",
+}
 CHUNK = 1024 * 1024
+# Used when the client sends no useful type (curl, scripts); browsers send their own.
+CONTENT_TYPES = {
+    ".mp3": "audio/mpeg", ".mpga": "audio/mpeg", ".m4a": "audio/mp4", ".wav": "audio/wav", ".aac": "audio/aac",
+    ".ogg": "audio/ogg", ".oga": "audio/ogg", ".opus": "audio/ogg", ".flac": "audio/flac", ".wma": "audio/x-ms-wma",
+    ".mp4": "video/mp4", ".m4v": "video/mp4", ".mov": "video/quicktime", ".webm": "video/webm",
+    ".mkv": "video/x-matroska", ".avi": "video/x-msvideo", ".mpeg": "video/mpeg", ".3gp": "video/3gpp",
+}
 
 
 def media_root() -> Path:
@@ -23,7 +33,7 @@ def _safe_ext(filename: str | None) -> str:
     ext = os.path.splitext(filename or "")[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         raise ValidationFailed(
-            f"Unsupported media type '{ext or 'unknown'}'. Use MP3, M4A, WAV, MP4, WEBM, OGG, AAC or MOV.", "invalid_media"
+            f"Unsupported media type '{ext or 'unknown'}'. Use MP3, M4A, WAV, AAC, OGG, OPUS, FLAC, MP4, MOV, WEBM, MKV or AVI.", "invalid_media"
         )
     return ext
 
@@ -41,6 +51,8 @@ async def save_media(upload: UploadFile, owner_id: int, meeting_id: int) -> tupl
     """Stream the upload to disk with a size cap. Returns (relative path, content type)."""
     ext = validate_upload(upload)
     content_type = upload.content_type or ""
+    if content_type in ("", "application/octet-stream"):
+        content_type = CONTENT_TYPES.get(ext, content_type)
     rel = f"{owner_id}/{meeting_id}-{secrets.token_hex(4)}{ext}"
     dest = media_root() / rel
     dest.parent.mkdir(parents=True, exist_ok=True)

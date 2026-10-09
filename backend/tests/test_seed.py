@@ -139,3 +139,12 @@ def test_seeded_transcripts_are_searchable_through_fts(db):
     title = db.get(Meeting, rows[0][0]).title
     assert "Interview" in title
     assert db.execute(text("SELECT count(*) FROM transcript_fts WHERE transcript_fts MATCH 'carrier'")).scalar() > 5
+
+
+def test_every_seeded_meeting_has_a_streamable_recording(seeded):
+    items = seeded.get("/api/meetings").json()["items"]
+    assert len(items) == 7
+    for item in items:
+        url = seeded.get(f"/api/meetings/{item['id']}").json()["media_url"]
+        res = seeded.get(url, headers={"Range": "bytes=0-99"})
+        assert res.status_code == 206 and res.headers["content-type"] == "audio/mp4", item["title"]

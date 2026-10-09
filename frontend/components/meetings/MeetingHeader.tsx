@@ -62,6 +62,7 @@ export function MeetingHeader({ meeting }: { meeting: MeetingDetail }) {
           <Share2 className="size-4" strokeWidth={1.8} /> <span className="hidden sm:inline">Share</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-60">
+          <DropdownMenuItem onClick={() => exportAs.mutate("pdf")}><FileText /> Download PDF (.pdf)</DropdownMenuItem>
           <DropdownMenuItem onClick={() => exportAs.mutate("md")}><FileText /> Download Markdown (.md)</DropdownMenuItem>
           <DropdownMenuItem onClick={() => exportAs.mutate("txt")}><Download /> Download plain text (.txt)</DropdownMenuItem>
           <DropdownMenuSeparator />

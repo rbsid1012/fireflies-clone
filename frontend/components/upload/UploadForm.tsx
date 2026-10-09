@@ -108,7 +108,7 @@ export function UploadForm({ initialMode = "file" }: { initialMode?: Mode }) {
           <>
             <Upload className="size-7 text-muted-foreground" strokeWidth={1.4} />
             <p className="mt-3.5 text-[15px] font-medium text-foreground">{transcript?.name ?? media?.name ?? "Upload a file to generate a transcript"}</p>
-            <p className="mt-2 max-w-[560px] text-[12px] text-fg3">Browse or drag and drop MP3, M4A, WAV, MP4 or WEBM recordings (max 25 MB to transcribe), or a .txt, .vtt, .srt or .json transcript.</p>
+            <p className="mt-2 max-w-[560px] text-[12px] text-fg3">Browse or drag and drop MP3, M4A, WAV, AAC, OGG, OPUS, FLAC, MP4, MOV, WEBM, MKV or AVI recordings (max 25 MB to transcribe), or a .txt, .vtt, .srt or .json transcript.</p>
             <button type="button" onClick={() => pick.current?.click()} className="mt-5 h-9 rounded-md bg-primary px-4 text-[14px] text-white transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring/60">Browse Files</button>
             <button type="button" onClick={() => setMode("paste")} className="mt-3 text-[13px] text-fg3 underline-offset-4 hover:text-foreground hover:underline">or paste the text</button>
             <input ref={pick} type="file" accept={`audio/*,video/*,${[...MEDIA_EXTENSIONS, ...TRANSCRIPT_EXTENSIONS].join(",")}`} hidden aria-label="Choose a recording or transcript" onChange={(e) => { takeAny(e.target.files?.[0] ?? null); e.target.value = ""; }} />

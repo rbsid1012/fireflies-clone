@@ -5,6 +5,7 @@ is attributed to "Speaker"; the timings are real. The result is a VTT document t
 same parser as an uploaded transcript.
 """
 import os
+import subprocess
 import httpx
 
 from app.config import settings
@@ -16,6 +17,29 @@ SPEAKER = "Speaker"
 
 # What the speech-to-text API can read. Other recordings can still be attached to a meeting that has a transcript.
 STT_EXTENSIONS = {".mp3", ".mp4", ".mpeg", ".mpga", ".m4a", ".wav", ".webm", ".ogg", ".oga", ".opus", ".flac"}
+
+
+# Containers the speech service reads once they carry a name it recognises (it checks the content, not the name).
+RENAME_FOR_STT = {".mov": ".mp4", ".m4v": ".mp4", ".3gp": ".mp4", ".mkv": ".webm"}
+# Formats it cannot read at all: converted to MP3 on the server first.
+CONVERT_FOR_STT = {".aac", ".wma", ".avi", ".amr", ".mpg"}
+
+
+def _to_mp3(data: bytes) -> bytes:
+    """Re-encode to a small mono MP3 (about 0.4 MB per minute) with a bundled ffmpeg."""
+    try:
+        import imageio_ffmpeg
+
+        proc = subprocess.run(
+            [imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-i", "pipe:0", "-vn", "-ac", "1", "-ar", "16000",
+             "-b:a", "48k", "-f", "mp3", "pipe:1"],
+            input=data, capture_output=True, timeout=120,
+        )
+    except (ImportError, OSError, subprocess.TimeoutExpired) as exc:
+        raise ValidationFailed("This recording format can't be converted on the server. Upload a transcript with it.", "unsupported_for_transcription") from exc
+    if proc.returncode != 0 or not proc.stdout:
+        raise ValidationFailed("That recording could not be read. Try MP3, M4A or WAV, or upload a transcript with it.", "unreadable_recording")
+    return proc.stdout
 
 
 def available() -> bool:
@@ -58,6 +82,10 @@ def transcribe(data: bytes, filename: str, content_type: str | None, client: htt
             "transcription_unavailable",
         )
     ext = os.path.splitext(filename)[1].lower()
+    if ext in RENAME_FOR_STT:
+        filename, ext = f"recording{RENAME_FOR_STT[ext]}", RENAME_FOR_STT[ext]
+    elif ext in CONVERT_FOR_STT:
+        data, filename, content_type, ext = _to_mp3(data), "recording.mp3", "audio/mpeg", ".mp3"
     if ext not in STT_EXTENSIONS:
         raise ValidationFailed(
             f"{ext or 'That'} recordings can't be transcribed automatically. Convert it to MP3, M4A, WAV, FLAC or MP4, or upload a transcript with it.",

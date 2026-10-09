@@ -1,0 +1,24 @@
+# Render Blueprint: backend only (deploy the frontend on Vercel).
+# Free plan: the service sleeps after ~15 min idle and its disk is wiped on every restart/redeploy,
+# so accounts and uploads do not survive. SEED_ON_STARTUP recreates the demo data each time.
+services:
+  - type: web
+    name: fireflies-clone-api
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SEED_ON_STARTUP
+        value: "true"
+      - key: DEMO_LOGIN_ENABLED
+        value: "true"
+      - key: CORS_ORIGINS
+        sync: false   # your Vercel URL, e.g. https://fireflies-clone.vercel.app
+      - key: FRONTEND_URL
+        sync: false   # same Vercel URL

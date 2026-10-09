@@ -1,0 +1,72 @@
+{
+  "title": "Q4 Launch Campaign Planning",
+  "started_at": "2026-10-08T13:00:00+00:00",
+  "tags": ["marketing", "planning"],
+  "participants": [
+    {"label": "Nina", "name": "Nina Castellanos", "email": "nina.castellanos@lumenly.io"},
+    {"label": "Aisha", "name": "Aisha Bello", "email": "aisha.bello@lumenly.io"},
+    {"label": "Tom", "name": "Tom Becker", "email": "tom.becker@lumenly.io"},
+    {"label": "Jenna", "name": "Jenna Okafor", "email": "jenna.okafor@lumenly.io"},
+    {"label": "Priya", "name": "Priya Raman", "email": "priya.raman@lumenly.io"}
+  ],
+  "segments": [
+    ["Nina", "Thanks for joining. The goal today is to agree on the plan for the November launch of our alerting rules feature, including the message, the channels, and who does what."],
+    ["Aisha", "Quick product context. Alerting rules let customers define conditions like a shipment running two hours late, and notify the right person by email, text, or Slack. It's the most requested feature of the year."],
+    ["Nina", "Great. Who's the audience? I'd like to be specific rather than saying everyone."],
+    ["Jenna", "From the sales side, it's operations managers at mid-sized shippers, the people who currently find out about delays from angry customers. Greg at Northwind is a perfect example."],
+    ["Priya", "On the customer success side, I'd add existing customers who haven't turned on any notifications. About a third of our accounts have none configured."],
+    ["Nina", "That's useful. So two audiences, new prospects and an adoption push for existing customers. Do we want one message or two?"],
+    ["Tom", "I'd say one core idea with two framings. The idea is you hear about problems before your customers do."],
+    ["Nina", "I like that. It's concrete and it's about the customer's customer. Let me test a headline: Know before they ask."],
+    ["Jenna", "That's good. It's exactly what prospects tell me on calls."],
+    ["Tom", "For the visual direction, I'd avoid generic dashboards. I'd show a single shipment delay and the alert landing on a phone, so the story is one moment, not a feature list."],
+    ["Nina", "Agreed. Tom, how long would it take to produce a hero visual and a short product video?"],
+    ["Tom", "The hero visual is a week. A thirty second video is more like two and a half weeks if we want it to look polished. I'd need the final copy by October fifteenth."],
+    ["Nina", "That works. I'll have copy to you by the fourteenth. What channels are we using?"],
+    ["Nina", "My proposal is a launch email to the full customer list, a blog post with a customer story, LinkedIn posts, and a webinar two weeks after launch."],
+    ["Priya", "For the customer story, I can introduce you to two customers who beta tested the feature. One of them cut late-delivery complaints by almost half, and they're happy to be quoted."],
+    ["Nina", "That's the proof we need. Can you connect me with them this week?"],
+    ["Priya", "I'll send introductions tomorrow."],
+    ["Aisha", "One concern. The launch is November twelfth, but the SMS alert option depends on a vendor integration that isn't finished. If it slips, we shouldn't advertise it."],
+    ["Nina", "Good flag. What's the likelihood it slips?"],
+    ["Aisha", "Maybe thirty percent. I'd say we message email and Slack as the headline, and treat SMS as a bonus if it's ready."],
+    ["Nina", "I'll write the copy that way. We can add SMS to the blog post the day it's confirmed."],
+    ["Jenna", "Can we also give the sales team a one-pager? I have three deals in the next month where this will come up directly."],
+    ["Nina", "Yes. I'll draft a one-pager with the pitch, three objection responses, and a demo script. Jenna, can you review it for accuracy?"],
+    ["Jenna", "Sure. If I get it by the twentieth I can use it in two calls the following week."],
+    ["Nina", "Done. Now the webinar. I think it should be hands-on, how to set up your first five alert rules, rather than a product pitch. Who should host?"],
+    ["Aisha", "I'd be happy to do the demo part. Priya could join for the customer perspective."],
+    ["Priya", "I'd like that. I could also pull together the common rules our beta customers set up so people have a starting point."],
+    ["Nina", "Perfect. I'll book the webinar platform for the twenty-sixth of November and open registration at launch."],
+    ["Nina", "What about budget? I have about fifteen thousand for the quarter, and I'd like to spend about a third on the video and the rest on promotion."],
+    ["Jenna", "Would a small paid LinkedIn push to operations titles be worth it? That's where my prospects are."],
+    ["Nina", "I think so. Let's put five thousand behind targeted LinkedIn ads for the two weeks after launch and measure demo requests from them."],
+    ["Aisha", "How will we measure success overall?"],
+    ["Nina", "Three numbers. Demo requests attributed to the campaign, the share of existing customers who create at least one alert rule within thirty days, and webinar attendance. I'd set a goal of twenty-five percent of the unactivated accounts."],
+    ["Priya", "That's ambitious but doable if we run an in-app prompt alongside the email."],
+    ["Nina", "Good point. Aisha, can product add an in-app banner pointing people to the rule setup?"],
+    ["Aisha", "I'll ask Sofia to scope it. It should be small. I'll let you know by Monday."],
+    ["Nina", "Great. I'll write up the plan and the timeline and send it out today. Thanks all."]
+  ],
+  "overview": "Planning session for the November 12 launch of the alerting rules feature. The audience is split between prospective operations managers at mid-sized shippers and existing customers, about a third of whom have no notifications configured. The core message, \"Know before they ask,\" will anchor a launch email, a blog post with a beta customer story, LinkedIn posts, and a hands-on webinar on November 26. Tom will produce a hero visual and a 30-second video from copy due October 14. Because the SMS vendor integration may slip, email and Slack are the headline channels. Budget is about $15k, including $5k for targeted LinkedIn ads. Success will be measured by campaign demo requests, alert rule activation by existing customers (target 25% of unactivated accounts), and webinar attendance.",
+  "keywords": ["alerting rules", "launch campaign", "Know before they ask", "webinar", "LinkedIn ads", "SMS integration", "activation", "sales one-pager"],
+  "chapters": [
+    {"at": 0, "title": "Goals and audience", "summary": "Two audiences: new prospects and unactivated existing customers."},
+    {"at": 6, "title": "Message and creative", "summary": "\"Know before they ask\" and a single-moment visual story."},
+    {"at": 13, "title": "Channels and customer story", "summary": "Email, blog, LinkedIn, and beta customer proof."},
+    {"at": 17, "title": "SMS dependency risk", "summary": "Headline email and Slack; SMS as a bonus."},
+    {"at": 21, "title": "Sales enablement and webinar", "summary": "One-pager for sales and a hands-on webinar."},
+    {"at": 28, "title": "Budget and success metrics", "summary": "LinkedIn spend and three measurable outcomes."}
+  ],
+  "action_items": [
+    {"at": 12, "text": "Deliver final launch copy to Tom", "assignee": "Nina", "due": "2026-10-14", "done": false},
+    {"at": 16, "text": "Send introductions to the two beta customers for the customer story", "assignee": "Priya", "due": "2026-10-09", "done": false},
+    {"at": 22, "text": "Draft a sales one-pager with pitch, objection responses, and demo script", "assignee": "Nina", "due": "2026-10-20", "done": false},
+    {"at": 27, "text": "Book the webinar platform for November 26 and open registration at launch", "assignee": "Nina", "due": "2026-11-12", "done": false},
+    {"at": 35, "text": "Ask Sofia to scope an in-app banner pointing to alert rule setup", "assignee": "Aisha", "due": "2026-10-12", "done": false},
+    {"at": 36, "text": "Write up the launch plan and timeline and send it to the group", "assignee": "Nina", "due": "2026-10-08", "done": true}
+  ],
+  "soundbites": [
+    {"from": 6, "to": 8, "note": "Campaign message lands: Know before they ask"}
+  ]
+}

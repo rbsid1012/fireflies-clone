@@ -1,0 +1,59 @@
+{
+  "title": "1:1 - Alex and Marcus",
+  "started_at": "2026-10-07T11:00:00+00:00",
+  "tags": ["1:1"],
+  "participants": [
+    {"label": "Alex", "name": "Alex Morgan", "email": "alex.morgan@lumenly.io"},
+    {"label": "Marcus", "name": "Marcus Chen", "email": "marcus.chen@lumenly.io"}
+  ],
+  "segments": [
+    ["Alex", "Hey Marcus, how's your week going so far?"],
+    ["Marcus", "Pretty good. A bit tiring, honestly. The on-call week last week was rough, and I'm still catching up on sleep."],
+    ["Alex", "I saw the page at three in the morning on Saturday. Thank you for handling that. Was it the same issue as before?"],
+    ["Marcus", "Same alert, different cause this time. The ingestion workers ran out of memory after a carrier sent a massive file. I put a size limit in as a stopgap, but we need a proper fix."],
+    ["Alex", "Let's make sure that gets a ticket and some real time. I don't want you absorbing this as a recurring cost. Do you want to own the fix?"],
+    ["Marcus", "I do, actually. It ties into what I want to work on anyway, which is streaming the files instead of loading them whole."],
+    ["Alex", "Good. Let's talk about that. How are you feeling about your current projects overall?"],
+    ["Marcus", "The webhook retry work is fine, but it's incremental. I'd love to take on something with more design in it. I've been thinking about the ingestion redesign."],
+    ["Alex", "That's the biggest technical piece we have this year, and I think you're ready for it. It would mean leading the design, writing the proposal, and pulling in Dmitri and Sofia where needed."],
+    ["Marcus", "I'd be nervous about the leading part, to be honest. I've contributed to designs, but I've never been the person who drives the whole thing."],
+    ["Alex", "That's reasonable. I'll help. We can do weekly design check-ins, and I'll review the first draft before it goes to the wider team. The goal is that you're comfortable by the time it's presented."],
+    ["Marcus", "That would help a lot. Would the webhook work get reassigned?"],
+    ["Alex", "I'd hand it to Sofia's team or hold it. The ingestion redesign should be your focus for the next two months, with maybe a day a week for on-call follow-ups."],
+    ["Marcus", "Okay. Then I'd want to write a short problem statement first, with numbers on how fast volume is growing, so we agree on what we're solving."],
+    ["Alex", "Perfect. Aim to have that to me by next Wednesday. It doesn't need to be polished."],
+    ["Marcus", "Will do. Can I also ask about the senior promotion? We talked about it at the start of the year."],
+    ["Alex", "Yes, and I'm glad you brought it up. Honestly, you're close. The gap I see is scope, being the technical owner of something cross-team, and the ingestion redesign is exactly that."],
+    ["Marcus", "So if the redesign goes well, that's the case for promotion?"],
+    ["Alex", "That plus continued reliability work. I can't promise timing since it goes through calibration in January, but I'll write it up so the evidence is in place."],
+    ["Marcus", "That's clear. Thanks for being direct about it."],
+    ["Alex", "Always. Now, anything bothering you on the team side? How are things with Sofia and Dmitri?"],
+    ["Marcus", "Good, mostly. One thing is code review turnaround. Pull requests sit for a day or more, and it blocks me when I'm trying to ship."],
+    ["Alex", "I've heard that from a couple of people. What would help? A rotation, a time box, a rule about response times?"],
+    ["Marcus", "A simple norm might be enough, like first review within four working hours. We tried it informally once and it worked until things got busy."],
+    ["Alex", "Let's propose it at the next team meeting and see if people agree. Would you be willing to bring it up since you raised it?"],
+    ["Marcus", "Sure, I can do that."],
+    ["Alex", "Last topic from me. Are you taking time off soon? You haven't used much of your leave this year."],
+    ["Marcus", "I was thinking about a week at the end of November, around Thanksgiving."],
+    ["Alex", "Please do. I'll make sure on-call coverage is arranged. Book it soon so we can plan around it."],
+    ["Marcus", "I'll put it in the calendar today."],
+    ["Alex", "Great. Thanks Marcus, I'll write up the notes from this one and share them with you."]
+  ],
+  "overview": "Alex and Marcus discussed Marcus's rough on-call week, caused by an ingestion worker memory failure after an oversized carrier file; Marcus will own the proper streaming fix. Alex proposed that Marcus lead the ingestion redesign over the next two months, with weekly design check-ins for support, and Marcus will write a short problem statement by next Wednesday. They covered the path to a senior promotion, which hinges on owning a cross-team technical project. Marcus raised slow code review turnaround and will propose a four-working-hour first-review norm to the team. He also plans a week off around Thanksgiving.",
+  "keywords": ["on call", "ingestion redesign", "streaming", "senior promotion", "code review turnaround", "design check-ins", "time off"],
+  "chapters": [
+    {"at": 0, "title": "Check in and on-call fallout", "summary": "Rough on-call week and the oversized file failure."},
+    {"at": 6, "title": "Ingestion redesign opportunity", "summary": "Marcus to lead the design with support from Alex."},
+    {"at": 15, "title": "Promotion path", "summary": "Scope and cross-team ownership as the gap."},
+    {"at": 20, "title": "Team and process", "summary": "Code review turnaround norm."},
+    {"at": 26, "title": "Time off", "summary": "Week off around Thanksgiving."}
+  ],
+  "action_items": [
+    {"at": 14, "text": "Write a short problem statement for the ingestion redesign with volume growth numbers", "assignee": "Marcus", "due": "2026-10-14", "done": false},
+    {"at": 4, "text": "Create a ticket and schedule time for the streaming file ingestion fix", "assignee": "Alex", "due": "2026-10-09", "done": false},
+    {"at": 24, "text": "Propose a four working hour first-review norm at the next team meeting", "assignee": "Marcus", "due": "2026-10-15", "done": false},
+    {"at": 18, "text": "Write up promotion evidence ahead of January calibration", "assignee": "Alex", "due": "2026-12-15", "done": false},
+    {"at": 29, "text": "Book the week of leave around Thanksgiving in the calendar", "assignee": "Marcus", "due": "2026-10-07", "done": true}
+  ],
+  "soundbites": []
+}

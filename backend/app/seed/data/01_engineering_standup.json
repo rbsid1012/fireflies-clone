@@ -1,0 +1,49 @@
+{
+  "title": "Engineering Daily Standup",
+  "started_at": "2026-10-06T09:30:00+00:00",
+  "tags": ["standup", "engineering"],
+  "participants": [
+    {"label": "Alex", "name": "Alex Morgan", "email": "alex.morgan@lumenly.io"},
+    {"label": "Marcus", "name": "Marcus Chen", "email": "marcus.chen@lumenly.io"},
+    {"label": "Sofia", "name": "Sofia Alvarez", "email": "sofia.alvarez@lumenly.io"},
+    {"label": "Dmitri", "name": "Dmitri Volkov", "email": "dmitri.volkov@lumenly.io"}
+  ],
+  "segments": [
+    ["Alex", "Morning everyone. Let's keep this tight today, we have the release freeze on Thursday. Marcus, do you want to start?"],
+    ["Marcus", "Sure. Yesterday I finished the pagination fix for the shipments endpoint, it's merged. Today I'm picking up the webhook retry work."],
+    ["Alex", "Any blockers on the webhook retry?"],
+    ["Marcus", "One. I need the staging queue credentials rotated before I can test against it. Dmitri, can you help with that?"],
+    ["Dmitri", "Yeah, I'll rotate them this morning and drop the new values in the vault. Should be done by ten."],
+    ["Marcus", "Perfect, that unblocks me. Nothing else from my side."],
+    ["Alex", "Sofia, you're up."],
+    ["Sofia", "I wrapped the new tracking timeline component yesterday. It's in review, and Tom already left a few spacing comments which I'll address today."],
+    ["Sofia", "After that I'll start on the dark mode tokens. I think that's about two days of work, so I should have a PR up by Wednesday."],
+    ["Alex", "Great. Is the timeline component accessible? Last time we had issues with screen readers on the map view."],
+    ["Sofia", "Good catch. I tested with VoiceOver and it reads the events in order, but I haven't tried NVDA. I'll check that before I merge."],
+    ["Alex", "Thanks. Dmitri, how's infrastructure looking?"],
+    ["Dmitri", "Mostly quiet. We had a brief CPU spike on the API pods around two a.m. that resolved itself, so I'm adding an alert threshold rather than paging people."],
+    ["Dmitri", "I also want to start moving the cron jobs off the old scheduler. We need to do that before the end of the month or the VM gets decommissioned."],
+    ["Alex", "Okay, that's a hard deadline then. Can you put together a list of the jobs and who owns each one?"],
+    ["Dmitri", "I'll have the inventory in the team channel by end of day tomorrow."],
+    ["Alex", "Perfect. One thing from me. The release freeze is Thursday at noon, so anything that isn't merged by then slips to next sprint."],
+    ["Marcus", "Does the webhook retry work need to make the freeze? It's not customer facing yet."],
+    ["Alex", "No, that can land after. Prioritize the pagination fix and the timeline component, those are the two the customer success team is waiting on."],
+    ["Sofia", "Sounds good. We should also announce the freeze in the all-hands channel so nobody gets surprised."],
+    ["Alex", "I'll post that right after this call. Alright, thanks all, let's get to it."]
+  ],
+  "overview": "The team reviewed progress ahead of Thursday's release freeze. Marcus finished the shipments pagination fix and is blocked only on rotated staging queue credentials, which Dmitri will handle this morning. Sofia's tracking timeline component is in review pending an NVDA accessibility check, with dark mode tokens next. Dmitri is adding an alert threshold after a minor CPU spike and must migrate cron jobs off the old scheduler before the VM is decommissioned at month end. Alex confirmed the pagination fix and timeline component take priority for the freeze; webhook retries can land afterward.",
+  "keywords": ["release freeze", "pagination", "webhook retry", "timeline component", "cron migration", "accessibility", "dark mode"],
+  "chapters": [
+    {"at": 0, "title": "Backend updates", "summary": "Pagination fix merged; webhook retry work blocked on staging credentials."},
+    {"at": 6, "title": "Frontend updates", "summary": "Timeline component in review; accessibility check and dark mode tokens next."},
+    {"at": 11, "title": "Infrastructure", "summary": "CPU alert threshold and the cron job migration deadline."},
+    {"at": 16, "title": "Release freeze priorities", "summary": "Thursday noon freeze; pagination fix and timeline component come first."}
+  ],
+  "action_items": [
+    {"at": 4, "text": "Rotate the staging queue credentials and store the new values in the vault", "assignee": "Dmitri", "due": "2026-10-06", "done": true},
+    {"at": 10, "text": "Test the tracking timeline component with NVDA before merging", "assignee": "Sofia", "due": "2026-10-08", "done": false},
+    {"at": 15, "text": "Post an inventory of cron jobs and their owners in the team channel", "assignee": "Dmitri", "due": "2026-10-07", "done": false},
+    {"at": 20, "text": "Announce the Thursday noon release freeze in the all-hands channel", "assignee": "Alex", "due": "2026-10-06", "done": true}
+  ],
+  "soundbites": []
+}

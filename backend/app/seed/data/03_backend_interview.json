@@ -1,0 +1,72 @@
+{
+  "title": "Senior Backend Engineer Interview - Ravi Shankar",
+  "started_at": "2026-10-01T17:00:00+00:00",
+  "tags": ["hiring", "interview"],
+  "participants": [
+    {"label": "Alex", "name": "Alex Morgan", "email": "alex.morgan@lumenly.io"},
+    {"label": "Marcus", "name": "Marcus Chen", "email": "marcus.chen@lumenly.io"},
+    {"label": "Ravi", "name": "Ravi Shankar", "email": "ravi.shankar@example.com"}
+  ],
+  "segments": [
+    ["Alex", "Hi Ravi, thanks for joining. I'm Alex, I run engineering here, and Marcus is one of our senior backend engineers. We'll spend about forty minutes, with time at the end for your questions."],
+    ["Ravi", "Thanks for having me. I'm excited to learn more about the team."],
+    ["Alex", "To start, could you tell us about a recent project you're proud of?"],
+    ["Ravi", "Sure. At my current company I led the redesign of our notification pipeline. It was a single Python service that sent roughly two million messages a day and was falling over whenever a provider had an outage."],
+    ["Ravi", "I split it into a producer that writes to Kafka and a set of independent workers per channel, each with its own retry policy and a dead letter queue."],
+    ["Marcus", "What drove the decision to use Kafka rather than something simpler like SQS?"],
+    ["Ravi", "Honestly it was partly that we already ran Kafka for analytics. But the real reason was replay. When a provider bug dropped messages for an hour, we could rewind the consumer offset and resend, which wasn't possible with SQS."],
+    ["Marcus", "That's a fair reason. Did you run into ordering problems?"],
+    ["Ravi", "Yes. We needed per-user ordering, so we keyed by user ID. The downside was a few very active accounts created hot partitions, and we had to add a secondary key for bulk senders."],
+    ["Alex", "Good. Let's shift to something more design oriented. Imagine we need a rate limiter for our public API. How would you approach it?"],
+    ["Ravi", "I'd start by clarifying requirements. Is it per API key, per IP, per endpoint? And do we need it to be exact or is approximate fine?"],
+    ["Alex", "Per API key, and approximate is fine, but it needs to work across multiple API servers."],
+    ["Ravi", "Then I'd use a token bucket stored in Redis. Each request runs a small Lua script that refills the bucket based on elapsed time and takes a token atomically, so there are no race conditions between servers."],
+    ["Marcus", "What if Redis goes down?"],
+    ["Ravi", "I'd fail open with a local in-memory limiter as a fallback, with a lower limit per server. Taking the API down because the rate limiter is down seems like the worse failure."],
+    ["Marcus", "I agree with that. How would you tell clients they've been limited?"],
+    ["Ravi", "A 429 status with a Retry-After header, plus the standard rate limit headers on every response so well behaved clients can slow down before they hit the wall."],
+    ["Alex", "Nice. Let's talk about something that went wrong. Tell us about a production incident you were part of."],
+    ["Ravi", "A few months ago we shipped a migration that added an index on a table with about four hundred million rows. We ran it during business hours and it locked writes for eleven minutes."],
+    ["Ravi", "I was on call. We couldn't cancel it safely, so we waited it out while I handled communication with support and the customers affected."],
+    ["Alex", "What did you change afterward?"],
+    ["Ravi", "Three things. We moved to concurrent index creation, we required a migration review for any table over a million rows, and we added a staging environment with production sized data so we'd see the timing before it mattered."],
+    ["Marcus", "I like that the fix was process as well as tooling. Let me ask a more hands on question. How would you debug an endpoint that's suddenly slow?"],
+    ["Ravi", "First I'd check whether it's slow for everyone or a subset, using traces to see which span grew. Then I'd look at the database, usually slow queries or lock contention, before suspecting the application code."],
+    ["Marcus", "And if the traces show the time is in a downstream service?"],
+    ["Ravi", "Then I'd look at that service's own metrics, check timeouts and retries, because retries can multiply load during a slowdown. Sometimes the fix is a circuit breaker, not a faster query."],
+    ["Alex", "That's the answer I was hoping for. Let's do some coding talk. What's your approach to testing a service that talks to external APIs?"],
+    ["Ravi", "A mix. Unit tests with the client mocked at the boundary, contract tests against recorded responses, and a small number of end to end tests against a sandbox. I try to keep the end to end set tiny because they're flaky."],
+    ["Marcus", "How do you keep recorded responses from going stale?"],
+    ["Ravi", "A scheduled job re-records them weekly and opens a pull request if anything differs. That way API changes show up as a diff instead of a production surprise."],
+    ["Alex", "That's clever. Now, how do you like to work with product and design?"],
+    ["Ravi", "I like being involved early. Engineers often spot cheaper ways to get the same outcome, and I'd rather suggest a simpler version in week one than argue about scope in week six."],
+    ["Alex", "Good. Anything you'd like to ask us?"],
+    ["Ravi", "Yes. What does on call look like here, and how often would I be on the rotation?"],
+    ["Marcus", "It's one week in six, and we have a runbook for every alert. We also have a rule that any alert that pages someone at night gets a ticket to fix the root cause."],
+    ["Ravi", "That's healthier than my current place. What's the biggest technical challenge the team faces this year?"],
+    ["Alex", "Scaling our ingestion pipeline. Carrier updates are growing about eighty percent year over year, and the current design won't make it past next summer without changes."],
+    ["Ravi", "That's right in the area I've been working in. I'd enjoy that."],
+    ["Alex", "Great. What's your timeline? Are you talking to other companies?"],
+    ["Ravi", "I have two other final rounds next week. I'd love to decide within about ten days."],
+    ["Alex", "Understood. We'll debrief this afternoon and I'll get back to you by Monday with next steps."],
+    ["Ravi", "Perfect. Thanks to you both, I really enjoyed the conversation."],
+    ["Marcus", "Thanks Ravi, nice meeting you."],
+    ["Alex", "Take care, and we'll be in touch."]
+  ],
+  "overview": "Technical interview for a senior backend engineer role. Ravi described redesigning a two-million-messages-a-day notification pipeline around Kafka, with per-channel workers and dead letter queues, and discussed ordering and hot partition tradeoffs. He designed a Redis token bucket rate limiter that fails open to a local limiter, walked through a production incident where an index migration locked a 400M-row table for eleven minutes and the process changes that followed, and outlined a debugging approach built on traces and circuit breakers. The interviewers were impressed with his testing strategy. Ravi asked about on-call load and the team's biggest challenge, scaling ingestion. Alex will follow up by Monday.",
+  "keywords": ["Kafka", "rate limiter", "token bucket", "Redis", "database migration", "incident review", "on call", "testing strategy"],
+  "chapters": [
+    {"at": 0, "title": "Introductions", "summary": "Format of the interview and welcome."},
+    {"at": 2, "title": "Notification pipeline project", "summary": "Kafka based redesign, replay, and per-user ordering."},
+    {"at": 9, "title": "System design: API rate limiter", "summary": "Redis token bucket, failure modes, and client signalling."},
+    {"at": 17, "title": "Production incident", "summary": "Index migration that locked writes, and the process changes afterward."},
+    {"at": 22, "title": "Debugging and testing", "summary": "Tracing slow endpoints, circuit breakers, and testing external API integrations."},
+    {"at": 32, "title": "Candidate questions and next steps", "summary": "On call, ingestion scaling challenge, and timeline."}
+  ],
+  "action_items": [
+    {"at": 40, "text": "Debrief on the interview and send Ravi next steps by Monday", "assignee": "Alex", "due": "2026-10-05", "done": true}
+  ],
+  "soundbites": [
+    {"from": 21, "to": 21, "note": "Strong answer on post-incident process changes"}
+  ]
+}

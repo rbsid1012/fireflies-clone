@@ -1,0 +1,176 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design tokens. The `.dark` block is the reference (sampled from the Fireflies
+ * screenshots in docs/reference/). The `:root` block is a provisional light theme
+ * that Phase 8 finishes; the app currently always renders dark (<html class="dark">).
+ */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand: var(--brand);
+  --color-banner: var(--banner);
+  --color-fg2: var(--fg2);
+  --color-fg3: var(--fg3);
+  --color-fg4: var(--fg4);
+  --color-iris: var(--iris);
+  --color-iris-soft: var(--iris-soft);
+  --color-iris-chip: var(--iris-chip);
+  --color-seg: var(--seg);
+  --color-chip: var(--chip);
+  --color-chip-hover: var(--chip-hover);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  /* Speaker colours: indexed by meeting_participants.color_index (Phase 6) */
+  --color-speaker-0: #8b7cf6;
+  --color-speaker-1: #f2994a;
+  --color-speaker-2: #2dbf9b;
+  --color-speaker-3: #e5578f;
+  --color-speaker-4: #4aa3f2;
+  --color-speaker-5: #d6b740;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #fafafa;
+  --foreground: #16161a;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --card-foreground: #16161a;
+  --popover: #ffffff;
+  --popover-foreground: #16161a;
+  --primary: #623ae6;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f1f3;
+  --secondary-foreground: #16161a;
+  --muted: #f1f1f3;
+  --muted-foreground: #6b6b73;
+  --accent: #efeefb;
+  --accent-foreground: #16161a;
+  --destructive: #d9363e;
+  --border: #e4e4e8;
+  --input: #dcdce1;
+  --ring: #623ae6;
+  --brand: #c5265f;
+  --banner: #efeefb;
+  --success: #e3f3ea;
+  --success-foreground: #1f7a4a;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #16161a;
+  --sidebar-primary: #623ae6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #efeefb;
+  --sidebar-accent-foreground: #16161a;
+  --sidebar-border: #e4e4e8;
+  --sidebar-ring: #623ae6;
+  --fg2: #3b3b42;
+  --fg3: #7c7c86;
+  --fg4: #a3a3ad;
+  --iris: #5b45d6;
+  --iris-soft: #6a55e0;
+  --iris-chip: #ebe8fb;
+  --seg: #ffffff;
+  --chip: #f1f1f3;
+  --chip-hover: #e8e8ec;
+}
+
+.dark {
+  --background: #131314;
+  --foreground: #fafafb;
+  --surface: #1e1e1f;
+  --card: #19191a;
+  --card-foreground: #f2f2f3;
+  --popover: #1e1e1f;
+  --popover-foreground: #f2f2f3;
+  --primary: #623ae6;
+  --primary-foreground: #ffffff;
+  --secondary: #292929;
+  --secondary-foreground: #f2f2f3;
+  --muted: #292929;
+  --muted-foreground: #aeaeb2;
+  --accent: #292929;
+  --accent-foreground: #fafafb;
+  --destructive: #e5484d;
+  --border: #292929;
+  --input: #323235;
+  --ring: #7f73e8;
+  --brand: #b22d5b;
+  --banner: #17152c;
+  --success: #26352e;
+  --success-foreground: #5f9f6e;
+  --sidebar: #1e1e1f;
+  --sidebar-foreground: #aeaeb2;
+  --sidebar-primary: #623ae6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #292929;
+  --sidebar-accent-foreground: #fafafb;
+  --sidebar-border: #292929;
+  --sidebar-ring: #7f73e8;
+  --fg2: #d1d1d6;
+  --fg3: #8e8e93;
+  --fg4: #6e6e73;
+  --iris: #7f73e8;
+  --iris-soft: #9b8cf5;
+  --iris-chip: #23205a;
+  --seg: #48494c;
+  --chip: #1c1c1d;
+  --chip-hover: #252526;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 35%, transparent) transparent;
+  }
+  html {
+    @apply font-sans;
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-size: 0.875rem; /* 14px, as in the reference */
+    line-height: 1.5;
+  }
+}

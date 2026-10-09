@@ -1,0 +1,16 @@
+[00:00:00] Priya: Thanks everyone for joining. Today we need to decide whether the mobile beta goes out this Friday.
+[00:00:06] Daniel: From engineering, we're close. The crash rate is down to 0.4 percent, but the push notification bug still isn't fixed.
+[00:00:15] Karen: From support, we have 40 beta testers signed up, and three of them reported login problems on Android.
+[00:00:21] Priya: How serious is the Android login issue?
+[00:00:24] Daniel: It affects about one in twenty attempts. I think we can fix it by Wednesday if we start today.
+[00:00:31] Karen: Then my recommendation is that we delay the beta by one week, to Friday, October 23rd.
+[00:00:37] Priya: I agree. Let's make it official: the beta launch moves to October 23rd.
+[00:00:42] Daniel: Okay. Action item: I will fix the Android login bug and the push notification bug by next Wednesday.
+[00:00:49] Karen: I'll email all 40 beta testers about the new date by tomorrow afternoon, and I'll prepare the known issues document.
+[00:00:56] Priya: Great. I'll update the launch checklist and tell the marketing team about the delay by the end of the day today.
+[00:01:02] Priya: One more risk. App store review usually takes three days. Can we submit by Monday?
+[00:01:08] Daniel: Yes. I can submit the build for app store review on Monday, October 19th, as long as testing passes.
+[00:01:16] Karen: Also, a question for later. Should we add a feedback form inside the app? Customers keep asking for one.
+[00:01:23] Priya: Good idea. Let's discuss it in next week's meeting. Karen, can you collect examples of those requests?
+[00:01:30] Karen: Sure. I'll gather the top 10 requests from the support inbox before the next meeting.
+[00:01:35] Priya: To summarize: the beta moves to October 23rd, Daniel fixes two bugs by Wednesday, Karen emails the testers and collects feedback requests, and I update the checklist and notify marketing. Thanks everyone.

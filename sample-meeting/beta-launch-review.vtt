@@ -1,0 +1,66 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:06.049
+<v Priya>Thanks everyone for joining. Today we need to decide whether the mobile beta goes out this Friday.
+
+2
+00:00:06.599 --> 00:00:14.800
+<v Daniel>From engineering, we're close. The crash rate is down to 0.4 percent, but the push notification bug still isn't fixed.
+
+3
+00:00:15.350 --> 00:00:21.420
+<v Karen>From support, we have 40 beta testers signed up, and three of them reported login problems on Android.
+
+4
+00:00:21.970 --> 00:00:24.184
+<v Priya>How serious is the Android login issue?
+
+5
+00:00:24.734 --> 00:00:30.531
+<v Daniel>It affects about one in twenty attempts. I think we can fix it by Wednesday if we start today.
+
+6
+00:00:31.081 --> 00:00:36.699
+<v Karen>Then my recommendation is that we delay the beta by one week, to Friday, October 23rd.
+
+7
+00:00:37.249 --> 00:00:41.959
+<v Priya>I agree. Let's make it official: the beta launch moves to October 23rd.
+
+8
+00:00:42.509 --> 00:00:49.181
+<v Daniel>Okay. Action item: I will fix the Android login bug and the push notification bug by next Wednesday.
+
+9
+00:00:49.731 --> 00:00:56.147
+<v Karen>I'll email all 40 beta testers about the new date by tomorrow afternoon, and I'll prepare the known issues document.
+
+10
+00:00:56.697 --> 00:01:02.315
+<v Priya>Great. I'll update the launch checklist and tell the marketing team about the delay by the end of the day today.
+
+11
+00:01:02.865 --> 00:01:07.859
+<v Priya>One more risk. App store review usually takes three days. Can we submit by Monday?
+
+12
+00:01:08.409 --> 00:01:15.819
+<v Daniel>Yes. I can submit the build for app store review on Monday, October 19th, as long as testing passes.
+
+13
+00:01:16.369 --> 00:01:23.075
+<v Karen>Also, a question for later. Should we add a feedback form inside the app? Customers keep asking for one.
+
+14
+00:01:23.625 --> 00:01:29.933
+<v Priya>Good idea. Let's discuss it in next week's meeting. Karen, can you collect examples of those requests?
+
+15
+00:01:30.483 --> 00:01:35.273
+<v Karen>Sure. I'll gather the top 10 requests from the support inbox before the next meeting.
+
+16
+00:01:35.823 --> 00:01:48.931
+<v Priya>To summarize: the beta moves to October 23rd, Daniel fixes two bugs by Wednesday, Karen emails the testers and collects feedback requests, and I update the checklist and notify marketing. Thanks everyone.
+

@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.env
+.env.local
+.DS_Store
+
+# Reference screenshots contain personal data (name, email, inbox); keep them local
+docs/reference/*.png
+docs/reference/_ignore/
